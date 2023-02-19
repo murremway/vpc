@@ -1,6 +1,6 @@
 pipeline {
   environment {
-    imagename = "HelloWorld"
+    imagename = "helloworld"
     ecrurl = "298436085140.dkr.ecr.us-east-1.amazonaws.com"
     ecrcredentials = "ecr:us-east-i:my-docker-repo"
     dockerImage = ''
