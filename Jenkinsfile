@@ -14,7 +14,7 @@ checkout scm
 stage('Build') { 
 steps { 
 script{
-app = docker.build("HelloWorld")
+app = sudo docker.build("HelloWorld")
 }
 }
 }
