@@ -24,8 +24,8 @@ pipeline {
     stage('Push') {
       steps {
         script{
-          docker.withRegistry("https://298436085140.dkr.ecr.us-east-1.amazonaws.com", "ecr:us-east-1:my.aws.credentials") {
-            docker.image("my-docker-repo").push()
+          docker.withRegistry("https://298436085140.dkr.ecr.us-east-1.amazonaws.com/my-docker-repo", "ecr:us-east-1:my.aws.credentials") {
+            docker.image("helloworld").push()
           }
         }
       }
