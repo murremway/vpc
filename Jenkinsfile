@@ -21,17 +21,12 @@ pipeline {
       }
     }
    
-stage('Deploy Master Image') {
-   when {
-      anyOf {
-            branch 'main'
-      }
-     }
-      steps{
-        script {
-          docker.withRegistry(ecrurl, ecrcredentials) {     
-            dockerImage.push("$BUILD_NUMBER")
-             dockerImage.push('latest')
+    stage('Push') {
+      steps {
+        script{
+          docker.withRegistry('https://298436085140.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:aws-credentials') {
+            app.push("${env.BUILD_NUMBER}")
+              app.push("latest")
 
           }
         }
