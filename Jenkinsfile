@@ -24,7 +24,7 @@ pipeline {
 stage('Deploy Master Image') {
    when {
       anyOf {
-            branch 'master'
+            branch 'main'
       }
      }
       steps{
