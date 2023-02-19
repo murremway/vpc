@@ -1,43 +1,55 @@
 pipeline {
-agent any
-options {
-skipStagesAfterUnstable()
-}
-stages {
-stage('Clone repository') { 
-steps { 
-script{
-checkout scm
-}
-}
-}
-stage('Build') { 
-steps { 
-script{
-app = sudo docker.build("HelloWorld")
-}
-}
-}
-stage('Test'){
-steps {
-echo 'Empty'
-}
-}
-stage('Push') {
-steps {
-script{
-docker.withRegistry('298436085140.dkr.ecr.us-east-1.amazonaws.com/my-docker-repo', 'ecr:us-east-2:aws-credentials') {
-app.push("${env.BUILD_NUMBER}")
-app.push("latest")
-}
-}
-}
-}
-stage('Deploy'){
-steps {
-sh 'kubectl apply -f deployment.yml'
-}
-}
+  environment {
+    imagename = "HelloWorld"
+    ecrurl = "298436085140.dkr.ecr.us-east-1.amazonaws.com"
+    ecrcredentials = "ecr:us-east-i:my-docker-repo"
+    dockerImage = ''
+  } 
+  agent any
+  stages {
+    stage('Cloning Git') {
+      steps {
+                checkout scm
 
-}
-}
+      }
+    }
+    stage('Building image') {
+      steps{
+        script {
+          dockerImage = docker.build imagename
+        }
+      }
+    }
+   
+stage('Deploy Master Image') {
+   when {
+      anyOf {
+            branch 'master'
+      }
+     }
+      steps{
+        script {
+          docker.withRegistry(ecrurl, ecrcredentials) {     
+            dockerImage.push("$BUILD_NUMBER")
+             dockerImage.push('latest')
+
+          }
+        }
+      }
+    }
+
+ 
+    stage('Remove Unused docker image - Master') {
+      when {
+      anyOf {
+            branch 'master'
+      }
+     }
+      steps{
+        sh "docker rmi $imagename:$BUILD_NUMBER"
+         sh "docker rmi $imagename:latest"
+
+      }
+    } // End of remove unused docker image for master
+  }  
+} //end of pipeline
