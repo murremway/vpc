@@ -2,7 +2,7 @@ pipeline {
   environment {
     imagename = "helloworld"
     ecrurl = "298436085140.dkr.ecr.us-east-1.amazonaws.com"
-    ecrcredentials = "ecr:us-east-i:my-docker-repo"
+    ecrcredentials = "ecr:us-east-i:helloworld"
     dockerImage = ''
   } 
   agent any
@@ -24,7 +24,7 @@ pipeline {
     stage('Push') {
       steps {
         script{
-          docker.withRegistry("https://298436085140.dkr.ecr.us-east-1.amazonaws.com/my-docker-repo", "ecr:us-east-1:my.aws.credentials") {
+          docker.withRegistry("https://298436085140.dkr.ecr.us-east-1.amazonaws.com", "ecr:us-east-1:my.aws.credentials") {
             docker.image("helloworld").push()
           }
         }
